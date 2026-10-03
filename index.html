@@ -38,55 +38,69 @@
     <!-- Importação do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://nwpkmaubbnqqfqodbule.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
-        const db = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // Criamos a ligação usando window.supabase para evitar conflitos
-        const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Garante que o código só corre depois da página estar totalmente pronta
+        window.addEventListener('DOMContentLoaded', () => {
+            const supabaseUrl = 'https://nwpkmaubbnqqfqodbule.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xcWZxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzE1NTgsImV4cCI6MjA1Njc5MTU1OH0';
+            const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const mensagem = document.getElementById('mensagem');
 
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const mensagem = document.getElementById('mensagem');
-
-        // Botão Criar Conta
-        document.getElementById('btn-criar').addEventListener('click', async () => {
-            if (!emailInput.value || !passwordInput.value) {
-                mensagem.innerText = "⚠️ Preencha o e-mail e a senha!";
+            if (!window.supabase) {
+                mensagem.innerText = "Erro: A biblioteca Supabase não carregou.";
                 return;
             }
-            mensagem.innerText = "A criar conta...";
-            
-            const { data, error } = await db.auth.signUp({
-                email: emailInput.value.trim(),
-                password: passwordInput.value.trim()
+
+            const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Botão Criar Conta
+            document.getElementById('btn-criar').addEventListener('click', async () => {
+                if (!emailInput.value || !passwordInput.value) {
+                    mensagem.innerText = "⚠️ Preencha o e-mail e a senha!";
+                    return;
+                }
+                mensagem.innerText = "A criar conta...";
+                
+                try {
+                    const { data, error } = await db.auth.signUp({
+                        email: emailInput.value.trim(),
+                        password: passwordInput.value.trim()
+                    });
+
+                    if (error) {
+                        mensagem.innerText = "Erro: " + error.message;
+                    } else {
+                        mensagem.innerText = "✅ Conta criada com sucesso!";
+                    }
+                } catch (err) {
+                    mensagem.innerText = "Erro de rede: " + err.message;
+                }
             });
 
-            if (error) {
-                mensagem.innerText = "Erro: " + error.message;
-            } else {
-                mensagem.innerText = "✅ Conta criada com sucesso!";
-            }
-        });
+            // Botão Entrar
+            document.getElementById('btn-entrar').addEventListener('click', async () => {
+                if (!emailInput.value || !passwordInput.value) {
+                    mensagem.innerText = "⚠️ Preencha o e-mail e a senha!";
+                    return;
+                }
+                mensagem.innerText = "A entrar...";
+                
+                try {
+                    const { data, error } = await db.auth.signInWithPassword({
+                        email: emailInput.value.trim(),
+                        password: passwordInput.value.trim()
+                    });
 
-        // Botão Entrar
-        document.getElementById('btn-entrar').addEventListener('click', async () => {
-            if (!emailInput.value || !passwordInput.value) {
-                mensagem.innerText = "⚠️ Preencha o e-mail e a senha!";
-                return;
-            }
-            mensagem.innerText = "A entrar...";
-            
-            const { data, error } = await db.auth.signInWithPassword({
-                email: emailInput.value.trim(),
-                password: passwordInput.value.trim()
+                    if (error) {
+                        mensagem.innerText = "Erro: " + error.message;
+                    } else {
+                        mensagem.innerText = "✅ Login efetuado com sucesso!";
+                    }
+                } catch (err) {
+                    mensagem.innerText = "Erro de rede: " + err.message;
+                }
             });
-
-            if (error) {
-                mensagem.innerText = "Erro: " + error.message;
-            } else {
-                mensagem.innerText = "✅ Login efetuado com sucesso!";
-            }
         });
     </script>
 </body>
