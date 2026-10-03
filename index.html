@@ -12,13 +12,10 @@
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #cbd5e1; }
         .input-group input { width: 100%; padding: 10px; border: 1px solid #334155; border-radius: 5px; background: #0f172a; color: #fff; font-size: 16px; }
-        .input-group input:focus { border-color: #38bdf8; outline: none; }
         button { width: 100%; padding: 10px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn-entrar { background: #38bdf8; color: #0f172a; }
-        .btn-entrar:hover { background: #0ea5e9; }
         .btn-criar { background: #10b981; color: #fff; margin-top: 5px; }
-        .btn-criar:hover { background: #059669; }
-        #mensagem { margin-top: 15px; text-align: center; font-size: 14px; font-weight: bold; }
+        #mensagem { margin-top: 15px; text-align: center; font-size: 14px; font-weight: bold; word-break: break-all; color: #facc15; }
     </style>
 </head>
 <body>
@@ -35,58 +32,46 @@
         </div>
         <button type="button" id="btn-entrar" class="btn-entrar">Entrar</button>
         <button type="button" id="btn-criar" class="btn-criar">Criar Nova Conta</button>
-        <p id="mensagem"></p>
+        <div id="mensagem">Sistema pronto.</div>
     </div>
 
     <!-- Importação do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // CONFIGURAÇÃO DO SUPABASE
-        const supabaseUrl = 'https://nwpkmaubbnqqfqodbule.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xcWZxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzE1NTgsImV4cCI6MjA1Njc5MTU1OH0.sua_chave_aqui';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        try {
+            const supabaseUrl = 'https://nwpkmaubbnqqfqodbule.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xcWZxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzE1NTgsImV4cCI6MjA1Njc5MTU1OH0.sua_chave_aqui';
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const mensagem = document.getElementById('mensagem');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const mensagem = document.getElementById('mensagem');
 
-        // Lógica de Entrar (Login)
-        document.getElementById('btn-entrar').addEventListener('click', async () => {
-            if (!emailInput.value || !passwordInput.value) {
-                mensagem.innerText = "⚠️ Preencha o e-mail e a senha.";
-                return;
-            }
-            mensagem.innerText = "Conectando...";
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: emailInput.value,
-                password: passwordInput.value
+            document.getElementById('btn-criar').addEventListener('click', async () => {
+                mensagem.innerText = "A processar clique...";
+                if (!emailInput.value || !passwordInput.value) {
+                    mensagem.innerText = "⚠️ Preencha os campos!";
+                    return;
+                }
+                
+                try {
+                    const { data, error } = await supabase.auth.signUp({
+                        email: emailInput.value.trim(),
+                        password: passwordInput.value.trim()
+                    });
+
+                    if (error) {
+                        mensagem.innerText = "Erro Supabase: " + error.message;
+                    } else {
+                        mensagem.innerText = "✅ Sucesso! Conta criada.";
+                    }
+                } catch (err) {
+                    mensagem.innerText = "Erro interno: " + err.message;
+                }
             });
-
-            if (error) {
-                mensagem.innerText = "Erro: " + error.message;
-            } else {
-                mensagem.innerText = "✅ Login feito com sucesso!";
-            }
-        });
-
-        // Lógica de Criar Conta
-        document.getElementById('btn-criar').addEventListener('click', async () => {
-            if (!emailInput.value || !passwordInput.value) {
-                mensagem.innerText = "⚠️ Preencha o e-mail e a senha para criar conta.";
-                return;
-            }
-            mensagem.innerText = "Criando conta...";
-            const { data, error } = await supabase.auth.signUp({
-                email: emailInput.value,
-                password: passwordInput.value
-            });
-
-            if (error) {
-                mensagem.innerText = "Erro: " + error.message;
-            } else {
-                mensagem.innerText = "✅ Conta criada com sucesso! Verifique seu e-mail.";
-            }
-        });
+        } catch (e) {
+            document.getElementById('mensagem').innerText = "Erro ao carregar script: " + e.message;
+        }
     </script>
 </body>
 </html>
