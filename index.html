@@ -15,27 +15,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// Cole aqui exatamente o URL copiado do botão da Supabase
 const url = 'https://nwpkmaubbnqgfodbule.supabase.co';
-
-// Cole aqui exatamente a chave anon public copiada do botão da Supabase
 const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
 
 const db = window.supabase.createClient(url, key);
 
 document.getElementById('btn').onclick = async () => {
   const m = document.getElementById('m');
-  m.innerText = "A criar conta...";
+  m.innerText = "A ligar à Supabase...";
   
-  const { data, error } = await db.auth.signUp({
-    email: document.getElementById('e').value.trim(),
-    password: document.getElementById('p').value.trim()
-  });
+  try {
+    const { data, error } = await db.auth.signUp({
+      email: document.getElementById('e').value.trim(),
+      password: document.getElementById('p').value.trim()
+    });
 
-  if (error) {
-    m.innerText = "Erro: " + error.message;
-  } else {
-    m.innerText = "✅ Sucesso! Conta criada.";
+    if (error) {
+      m.innerText = "Erro Supabase: " + error.message;
+    } else {
+      m.innerText = "✅ Sucesso! Conta criada.";
+    }
+  } catch (err) {
+    m.innerText = "Erro técnico de rede: " + err.message;
   }
 };
 </script>
