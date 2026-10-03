@@ -40,6 +40,7 @@
     <script>
         const supabaseUrl = 'https://nwpkmaubbnqqfqodbule.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
+        const db = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // Criamos a ligação usando window.supabase para evitar conflitos
         const db = window.supabase.createClient(supabaseUrl, supabaseKey);
