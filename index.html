@@ -2,52 +2,34 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NexoLite - Acesso Direto</title>
+<title>NexoLite - Diagnóstico</title>
 </head>
-<body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh;">
-<div style="background:#1e293b; padding:30px; border-radius:10px; width:300px;">
-<h2>NexoLite</h2>
-<input id="e" type="email" placeholder="E-mail" style="width:100%; padding:10px; margin:10px 0;"><br>
-<input id="p" type="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;"><br>
-<button id="btn" style="width:100%; padding:10px; background:#10b981; color:#fff; border:none; font-weight:bold;">Criar Conta</button>
-<p id="m" style="margin-top:10px; font-size:14px; word-break:break-all;"></p>
+<body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; font-family:Arial,sans-serif;">
+<div style="background:#1e293b; padding:30px; border-radius:10px; width:320px; text-align:center;">
+<h2>Diagnóstico Supabase</h2>
+<button id="btn" style="width:100%; padding:12px; background:#38bdf8; color:#0f172a; border:none; font-weight:bold; border-radius:5px; margin-top:15px; cursor:pointer;">Executar Teste</button>
+<p id="m" style="margin-top:15px; font-size:13px; word-break:break-all; text-align:left;"></p>
 </div>
 
 <script>
-const url = 'https://nwpkmaubbnqgfodbule.supabase.co/auth/v1/signup';
-const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
-
 document.getElementById('btn').onclick = async () => {
   const m = document.getElementById('m');
-  const email = document.getElementById('e').value.trim();
-  const password = document.getElementById('p').value.trim();
-
-  if (!email || !password) {
-    m.innerText = "⚠️ Preencha os campos!";
-    return;
-  }
-
-  m.innerText = "A registar...";
+  m.innerText = "A testar ligação...";
   
+  const url = 'https://nwpkmaubbnqgfodbule.supabase.co/rest/v1/';
+  const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
+
   try {
     const resposta = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'apikey': key
-      },
-      body: JSON.stringify({ email, password })
+      }
     });
-
-    const resultado = await resposta.json();
-
-    if (resposta.ok) {
-      m.innerText = "✅ Sucesso! Conta criada.";
-    } else {
-      m.innerText = "Erro: " + (resultado.msg || resultado.message || JSON.stringify(resultado));
-    }
+    
+    m.innerText = "✅ Resposta obtida com sucesso! Código HTTP: " + resposta.status;
   } catch (err) {
-    m.innerText = "Erro de rede: " + err.message;
+    m.innerText = "❌ Erro detetado: " + err.message;
   }
 };
 </script>
