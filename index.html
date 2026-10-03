@@ -2,23 +2,31 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NexoLite - Teste</title>
+<title>NexoLite - Teste Supabase</title>
 </head>
 <body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh;">
 <div style="background:#1e293b; padding:30px; border-radius:10px; width:300px;">
-<h2>Teste de Rede</h2>
-<button id="btn" style="width:100%; padding:10px; background:#38bdf8; color:#0f172a; border:none; font-weight:bold;">Testar Internet</button>
-<p id="m" style="margin-top:10px; font-size:14px;"></p>
+<h2>Teste Direto Supabase</h2>
+<button id="btn" style="width:100%; padding:10px; background:#38bdf8; color:#0f172a; border:none; font-weight:bold;">Testar Supabase</button>
+<p id="m" style="margin-top:10px; font-size:14px; word-break:break-all;"></p>
 </div>
 
 <script>
+const url = 'https://nwpkmaubbnqqfqodbule.supabase.co/rest/v1/';
+const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
+
 document.getElementById('btn').onclick = async () => {
   const m = document.getElementById('m');
-  m.innerText = "A testar...";
+  m.innerText = "A testar ligação...";
   try {
-    const resposta = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-    const dados = await resposta.json();
-    m.innerText = "✅ Sucesso de rede! Resposta: " + dados.title;
+    const resposta = await fetch(url, {
+      headers: { 'apikey': key }
+    });
+    if (resposta.ok || resposta.status === 401 || resposta.status === 404) {
+      m.innerText = "✅ Supabase respondeu! Código: " + resposta.status;
+    } else {
+      m.innerText = "⚠️ Erro HTTP: " + resposta.status;
+    }
   } catch (err) {
     m.innerText = "❌ Bloqueado: " + err.message;
   }
