@@ -2,33 +2,37 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NexoLite - Teste Supabase</title>
+<title>NexoLite - Acesso</title>
 </head>
 <body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh;">
 <div style="background:#1e293b; padding:30px; border-radius:10px; width:300px;">
-<h2>Teste Direto Supabase</h2>
-<button id="btn" style="width:100%; padding:10px; background:#38bdf8; color:#0f172a; border:none; font-weight:bold;">Testar Supabase</button>
+<h2>NexoLite</h2>
+<input id="e" type="email" placeholder="E-mail" style="width:100%; padding:10px; margin:10px 0;"><br>
+<input id="p" type="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;"><br>
+<button id="btn" style="width:100%; padding:10px; background:#10b981; color:#fff; border:none; font-weight:bold;">Criar Conta</button>
 <p id="m" style="margin-top:10px; font-size:14px; word-break:break-all;"></p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const url = 'https://nwpkmaubbnqqfqodbule.supabase.co/rest/v1/';
+const url = 'https://nwpkmaubbnqgfodbule.supabase.co';
 const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGttYXViYm5xZ2Zxb2RidWxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5ODY2NjQsImV4cCI6MjEwNjU2MjY2NH0.xUuIZPllE8TczzLtpBEaRtdfFZnqg38Sk8Xs170HkH8';
+
+const db = window.supabase.createClient(url, key);
 
 document.getElementById('btn').onclick = async () => {
   const m = document.getElementById('m');
-  m.innerText = "A testar ligação...";
-  try {
-    const resposta = await fetch(url, {
-      headers: { 'apikey': key }
-    });
-    if (resposta.ok || resposta.status === 401 || resposta.status === 404) {
-      m.innerText = "✅ Supabase respondeu! Código: " + resposta.status;
-    } else {
-      m.innerText = "⚠️ Erro HTTP: " + resposta.status;
-    }
-  } catch (err) {
-    m.innerText = "❌ Bloqueado: " + err.message;
+  m.innerText = "A criar conta...";
+  
+  const { data, error } = await db.auth.signUp({
+    email: document.getElementById('e').value.trim(),
+    password: document.getElementById('p').value.trim()
+  });
+
+  if (error) {
+    m.innerText = "Erro: " + error.message;
+  } else {
+    m.innerText = "✅ Sucesso! Conta criada.";
   }
 };
 </script>
