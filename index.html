@@ -1,39 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexoLite - Acesso</title>
 </head>
-<body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh;">
-<div style="background:#1e293b; padding:30px; border-radius:10px; width:300px;">
+<body style="background:#0f172a; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;">
+<div style="background:#1e293b; padding:30px; border-radius:10px; width:300px; text-align:center;">
 <h2>NexoLite</h2>
-<input id="e" type="email" placeholder="E-mail" style="width:100%; padding:10px; margin:10px 0;"><br>
-<input id="p" type="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0;"><br>
-<button id="btn" style="width:100%; padding:10px; background:#10b981; color:#fff; border:none; font-weight:bold;">Criar Conta</button>
-<p id="m" style="margin-top:10px; font-size:14px; word-break:break-all;"></p>
+<input id="e" type="email" placeholder="E-mail" style="width:100%; padding:10px; margin:10px 0; box-sizing:border-box;"><br>
+<input id="p" type="password" placeholder="Senha" style="width:100%; padding:10px; margin:10px 0; box-sizing:border-box;"><br>
+<button id="btn" style="width:100%; padding:10px; background:#10b981; color:#fff; border:none; font-weight:bold; cursor:pointer;">Criar Conta</button>
+<p id="m" style="margin-top:15px; font-size:14px; word-break:break-all;"></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const url = 'https://zsjbgoubqjkjzyniwnh.supabase.co';
-const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzamJnb3VicWp4a2p6eW5pd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMDE0NTcsImV4cCI6MjEwNzY3NzQ1N30.ZiEWP2BcS6RA1Z3jTaH5mi8urxp2LrOzCh5us38ZRLs';
-
-const db = window.supabase.createClient(url, key);
+const SUPABASE_URL = 'https://zsjbgoubqjkjzyniwnh.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzamJnb3VicWp4a2p6eW5pd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMDE0NTcsImV4cCI6MjEwNzY3NzQ1N30.ZiEWP2BcS6RA1Z3jTaH5mi8urxp2LrOzCh5us38ZRLs';
 
 document.getElementById('btn').onclick = async () => {
   const m = document.getElementById('m');
-  m.innerText = "A criar conta...";
-  
-  const { data, error } = await db.auth.signUp({
-    email: document.getElementById('e').value.trim(),
-    password: document.getElementById('p').value.trim()
-  });
+  const email = document.getElementById('e').value.trim();
+  const password = document.getElementById('p').value.trim();
 
-  if (error) {
-    m.innerText = "Erro: " + error.message;
-  } else {
-    m.innerText = "✅ Sucesso! Conta criada.";
+  if (!email || !password) {
+    m.innerText = "Preencha e-mail e senha!";
+    return;
+  }
+
+  m.innerText = "A enviar dados...";
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      m.innerText = "Erro: " + (data.msg || data.error_description || data.message || "Falha no registo");
+    } else {
+      m.innerText = "✅ Sucesso! Conta criada com sucesso.";
+    }
+  } catch (err) {
+    m.innerText = "Erro de ligação: " + err.message;
   }
 };
 </script>
